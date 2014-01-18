@@ -107,7 +107,7 @@ L.Storage.FeatureMixin = {
     defaultPopupTemplate: function (container) {
         if (this.properties.description) {
             var content = L.DomUtil.create('p', '', container);
-            content.innerHTML = L.Util.toHTML(this.properties.description);
+            content.innerHTML = L.Util.toHTML(this.properties.description,this.properties);
         }
 
     },

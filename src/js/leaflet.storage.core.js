@@ -45,7 +45,7 @@ L.Util.escapeHTML = function (s) {
     s = s? s.toString() : "";
     return s.replace(/</gm, '&lt;');
 };
-L.Util.toHTML = function (r) {
+L.Util.toHTML = function (r,p) {
     var ii;
 
     // detect newline format
@@ -83,6 +83,17 @@ L.Util.toHTML = function (r) {
     r = r.replace(/{{([^\]|]*?)}}/g, '<img src="$1">');
     r = r.replace(/{{([^|]*?)\|(.*?)}}/g, '<img src="$1" alt="$2">');
     r = r.replace(/(h_t_t_p)/g, 'http');
+
+    // Replace properties {name_property}
+    // Ugly but don't know how to do it better for now
+    function replaceProperty(match){
+	match = match.replace(/{(.*?)}/g,"$1");
+	return p[match];
+    }
+
+    if (typeof p !== "undefined") {
+   	r = r.replace(/{(.*?)}/g,replaceProperty);
+    }
 
     // video
     r = r.replace(/<<(.*?)>>/g, '<embed class="video" src="$1" allowfullscreen="true" allowscriptaccess="never" type="application/x-shockwave/flash"></embed>');
@@ -247,6 +258,7 @@ L.Storage.Help = L.Class.extend({
         L.DomUtil.add('li', '', elements, L._('Simple link: [[http://example.com]]'));
         L.DomUtil.add('li', '', elements, L._('Link with text: [[http://example.com|text of the link]]'));
         L.DomUtil.add('li', '', elements, L._('Image: {{http://image.url.com}}'));
+        L.DomUtil.add('li', '', elements, L._('Feature properties as variables: {property}'));
         L.DomUtil.add('li', '', elements, L._('--- for an horizontal rule'));
         return container;
     },
